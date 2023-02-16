@@ -16,43 +16,44 @@ export const Create = () => {
   const [isChecked, setIsChecked] = useState(false);
   const { isOpen, handleOpen } = useDisclosure();
   /* VwblContainerから web3,vwbl,connectWallet を取得する */
+  const { web3, vwbl, connectWallet } = VwblContainer.useContainer();　
 
   // Lesson-4
-  const mintNft = (data) => {
-    setIsLoading(true);
-    console.log('submitted data', data);
-    console.log('mint start...');
-    setTimeout(() => {
-      console.log('mint success!');
-      setIsLoading(false);
-      handleOpen();
-    }, 7000);
-  };
-
-  // const mintNft = async (data) => {
+  // const mintNft = (data) => {
   //   setIsLoading(true);
-  //   if (!web3 || !vwbl) {
-  //     alert('Your wallet is not connected. Please try again.');
-  //     setIsLoading(false);
-  //     await connectWallet();
-  //     return;
-  //   }
-
-  //   const { asset, thumbnail, title, description } = data;
-
-  //   try {
-  //     /* VWBLネットワークに対する署名を確認 */
-
-  //     /* VWBL NFTを発行 */
-
+  //   console.log('submitted data', data);
+  //   console.log('mint start...');
+  //   setTimeout(() => {
+  //     console.log('mint success!');
   //     setIsLoading(false);
   //     handleOpen();
-  //   } catch (error) {
-  //     console.error(error);
-  //     alert(error.message);
-  //     setIsLoading(false);
-  //   }
+  //   }, 7000);
   // };
+
+  const mintNft = async (data) => {
+    setIsLoading(true);
+    if (!web3 || !vwbl) {
+      alert('Your wallet is not connected. Please try again.');
+      setIsLoading(false);
+      await connectWallet();
+      return;
+    }
+
+    const { asset, thumbnail, title, description } = data;
+
+    try {
+      /* VWBLネットワークに対する署名を確認 */
+
+      /* VWBL NFTを発行 */
+
+      setIsLoading(false);
+      handleOpen();
+    } catch (error) {
+      console.error(error);
+      alert(error.message);
+      setIsLoading(false);
+    }
+  };
 
   const {
     register,
