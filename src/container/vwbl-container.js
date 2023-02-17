@@ -34,6 +34,17 @@ const useVWBL = () => {
       setWeb3(web3);
       setUserAddress(currentAccount);
 
+      // ネットワークを確認
+      const connectedChainId = await web3.eth.getChainId();
+      const properChainId = parseInt(process.env.REACT_APP_CHAIN_ID); // 今回の場合、Mumbaiの80001
+      if (connectedChainId !== properChainId) {
+        // ネットワークがMumbaiでない場合はネットワークを変更
+        await ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: web3.utils.toHex(properChainId) }],
+        });
+      }
+
       // initVwblを実行してvwblインスタンスを作成する
       initVwbl(web3);
 

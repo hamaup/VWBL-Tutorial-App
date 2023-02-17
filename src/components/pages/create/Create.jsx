@@ -42,9 +42,13 @@ export const Create = () => {
     const { asset, thumbnail, title, description } = data;
 
     try {
-      /* VWBLネットワークに対する署名を確認 */
+      // VWBLネットワークに対する署名を確認
+      if (!vwbl.signature) {
+        await vwbl.sign();
+      }
 
-      /* VWBL NFTを発行 */
+      // VWBL NFTを発行
+      await vwbl.managedCreateTokenForIPFS(title, description, asset[0], thumbnail[0], 0);
 
       setIsLoading(false);
       handleOpen();

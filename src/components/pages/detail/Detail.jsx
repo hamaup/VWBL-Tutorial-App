@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { VwblContainer } from '../../../container';
 import { useDisclosure } from '../../../hooks';
-import { decryptedImageData } from '../../../utils';
+//import { decryptedImageData } from '../../../utils';
 import { BackButton, CustomLoading, FileViewer, Section, TransferModal } from '../../common';
-import { testNfts } from '../../../utils';
+//import { testNfts } from '../../../utils';
 import './Detail.css';
 
 export const Detail = () => {
@@ -71,7 +71,7 @@ export const Detail = () => {
         <FileViewer url={decryptedNft.image} alt="NFT" height={'100%'} width={'100%'} />
       ) : (
         // Lesson-6
-        <FileViewer url={decryptedNft.decrypted_image} alt="NFT" height={'100%'} width={'100%'} />
+        <FileViewer url={decryptedNft.ownDataBase64[0]} alt="NFT" height={'100%'} width={'100%'} />　
       )}
       <div className="Detail-Container">
         <div className="Data-Wrapper">
