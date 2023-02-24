@@ -3,7 +3,7 @@ import { VwblContainer } from '../../../container';
 import { TbWalletOff } from 'react-icons/tb';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import { ItemList } from '../../common';
-import { testNfts } from '../../../utils';
+//import { testNfts } from '../../../utils';
 import clsx from 'clsx';
 import './Home.css';
 import 'react-tabs/style/react-tabs.css';

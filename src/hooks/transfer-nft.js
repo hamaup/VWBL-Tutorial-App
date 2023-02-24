@@ -44,7 +44,7 @@ export const useTransferNft = () => {
   // Lesson-7
   const handleComplete = () => {
     setIsComplete((prev) => !prev);
-    // navigate('/');
+    navigate('/');
   };
 
   return {

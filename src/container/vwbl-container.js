@@ -26,6 +26,7 @@ const useVWBL = () => {
       // web3インスタンスの生成
       const provider = new ethers.providers.Web3Provider(window.ethereum);
 
+      //await provider.send("eth_requestAccounts", []);
 
       // ユーザーアドレスを取得
       const signer = provider.getSigner();
@@ -37,15 +38,22 @@ const useVWBL = () => {
       setUserAddress(currentAccount);
 
       // ネットワークを確認
-      const connectedChainId = await provider.getNetwork().chainId;
+      const hexConnectedChainId = await window.ethereum.request({ method: 'eth_chainId' });
+      const connectedChainId = parseInt(hexConnectedChainId);
       const properChainId = parseInt(process.env.REACT_APP_CHAIN_ID); // 今回の場合、Mumbaiの80001
       if (connectedChainId !== properChainId) {
         // ネットワークがMumbaiでない場合はネットワークを変更
-        await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: ethers.utils.hexlify(properChainId) }],
-        });
+        try {
+          await window.ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: ethers.utils.hexValue(properChainId) }],
+          });
+        } catch (error) {
+          // wallet_switchEthereumChainがサポートされていない場合
+          console.error('wallet_switchEthereumChain is not supported');
+        }
       }
+
 
       // initVwblを実行してvwblインスタンスを作成する
       initVwbl(provider, signer);
