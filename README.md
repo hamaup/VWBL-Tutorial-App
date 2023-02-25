@@ -24,7 +24,7 @@ Let's become a more advanced NFT engineer with a VWBL NFT, which allows only tho
 
 - Lesson-1 ~ Lesson-7：a completed version of each lesson in the above materials.
 
-###　 Section4 Advanced / Next Action
+##　Section4 Advanced / Next Action
 
 Challenged Issue Number No.3, No.7
 
