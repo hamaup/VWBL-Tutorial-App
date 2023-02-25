@@ -15,6 +15,7 @@ export const Create = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const { isOpen, handleOpen } = useDisclosure();
+  const [mimeType, setMimeType] = useState('');
   /* VwblContainerから web3,vwbl,connectWallet を取得する */
   const { web3, vwbl, connectWallet } = VwblContainer.useContainer();　
 
@@ -67,6 +68,7 @@ export const Create = () => {
 
   const onChangeFile = useCallback((e) => {
     const file = e.target.files[0];
+    setMimeType(file.type);
     setFile(file);
   }, []);
 
@@ -82,6 +84,7 @@ export const Create = () => {
   const onClearFile = useCallback(() => {
     setFileUrl('');
     setFile(undefined);
+    setMimeType('');
   }, []);
 
   const onClearThumbnail = useCallback(() => {
@@ -141,7 +144,8 @@ export const Create = () => {
           <FilePreviewer
             url={fileUrl}
             inputId="asset"
-            acceptType=".jpeg,.jpg,.png,.gif"
+            acceptType=".jpeg,.jpg,.png,.gif,.pdf,.mp4,.mov,.mp3"
+            mimeType={mimeType}
             opt={{
               ...register('asset', {
                 required: 'Asset is required',
