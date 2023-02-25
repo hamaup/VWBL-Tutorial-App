@@ -32,7 +32,7 @@ export const Create = () => {
 
   const mintNft = async (data) => {
     setIsLoading(true);
-    if (!web3 || !vwbl) {
+    if (!(web3 && vwbl)) {
       alert('Your wallet is not connected. Please try again.');
       setIsLoading(false);
       await connectWallet();
@@ -242,7 +242,7 @@ export const Create = () => {
           <button type="submit" className="Mint-Button" disabled={!isChecked}>
             {isLoading ? (
               <div style={{ display: 'flex', textAlign: 'center', justifyContent: 'center', gap: 10 }}>
-                <div className="Mint-Loader"></div>
+                <div className="Mint-Loader" />
                 NFTを作成中です...
               </div>
             ) : (
