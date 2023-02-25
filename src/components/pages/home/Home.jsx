@@ -3,6 +3,7 @@ import { VwblContainer } from '../../../container';
 import { TbWalletOff } from 'react-icons/tb';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import { ItemList } from '../../common';
+//import { testNfts } from '../../../utils';
 import clsx from 'clsx';
 import './Home.css';
 import 'react-tabs/style/react-tabs.css';
@@ -11,7 +12,20 @@ export const Home = () => {
   const [tabIndex, setTabIndex] = useState(0);
   const [mintedNfts, setMintedNfts] = useState();
   const [ownedNfts, setOwnedNfts] = useState();
-  const { userAddress, vwbl, web3, connectWallet, disconnectWallet } = VwblContainer.useContainer();
+  const { userAddress, vwbl, web3, connectWallet, disconnectWallet } = VwblContainer.useContainer(); /* web3, vwblを追加 */
+
+  // Lesson-5
+  // const fetchNfts = () => {
+  //   setTimeout(() => {
+  //     setMintedNfts(testNfts.slice(0, 2));
+  //     setOwnedNfts(testNfts);
+  //   }, 2000);
+  // };
+
+  // Lesson-5
+  useEffect(() => {
+    fetchNfts();
+  }, [vwbl]); /* userAddressからvwblに変更 */
 
   const fetchNfts = async () => {
     if (!userAddress || !web3 || !vwbl) {
@@ -20,33 +34,37 @@ export const Home = () => {
     }
 
     try {
+      /* ミントしたNFTのtokenIdの配列を取得（mintedTokenIds） */
       const mintedTokenIds = await vwbl.getTokenByMinter(userAddress);
+
       if (mintedTokenIds.length) {
         const mintedNfts = [];
         for (const tokenId of mintedTokenIds) {
+          /* tokenIdからNFTメタデータを取得（metadata） */
           const metadata = await vwbl.getMetadata(tokenId);
           if (metadata) mintedNfts.push(metadata);
         }
         setMintedNfts(mintedNfts.reverse());
       }
 
+      /* 所有しているNFTのtokenIdの配列を取得（ownedTokenIds） */
       const ownedTokenIds = await vwbl.getOwnTokenIds();
+
       if (ownedTokenIds.length) {
         const owendNfts = [];
         for (const tokenId of ownedTokenIds) {
+          /* tokenIdからNFTメタデータを取得（metadata） */
           const metadata = await vwbl.getMetadata(tokenId);
+
           if (metadata) owendNfts.push(metadata);
         }
+
         setOwnedNfts(owendNfts.reverse());
       }
     } catch (error) {
       console.error(error);
     }
   };
-
-  useEffect(() => {
-    fetchNfts();
-  }, [vwbl]);
 
   return (
     <div className="Home-Container">

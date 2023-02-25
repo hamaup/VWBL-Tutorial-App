@@ -1,6 +1,5 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { FileViewer } from '../file-viewer/FileViewer';
 import { NotificationModal } from '../notification-modal/NotificationModal';
 import { ErrorMessage } from '@hookform/error-message';
 import './TransferModal.css';
@@ -18,7 +17,8 @@ export const TransferModal = ({ open, onClose, nft }) => {
     return (
       <div className="Overlay">
         <div className="Transfer-Modal-Container">
-          <FileViewer url={nft.ownDataBase64[0]} alt="NFT" height={'300px'} width={'100%'} />
+          {/* Lesson-7 */}
+          <img src={nft.image} alt="NFT" height='300px' width='100%' rounded='md'/>
           <form style={{ padding: '40px' }} onSubmit={handleSubmit(transferNft)}>
             <div className="Transfer-Modal-Actions">
               <Section title="Title" data={nft.name} />

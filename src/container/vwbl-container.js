@@ -1,7 +1,7 @@
 import { createContainer } from 'unstated-next';
 import { useState } from 'react';
-import Web3 from 'web3';
-import { ManageKeyType, UploadContentType, UploadMetadataType, VWBL } from 'vwbl-sdk';
+import { ethers } from 'ethers';
+import { ManageKeyType, UploadContentType, UploadMetadataType, VWBLEthers } from 'vwbl-sdk';
 
 const useVWBL = () => {
   const [userAddress, setUserAddress] = useState('');
@@ -17,24 +17,45 @@ const useVWBL = () => {
         console.log('MetaMask is installed!', ethereum);
       }
 
-      await ethereum.request({ method: 'eth_requestAccounts' });
-      const web3 = new Web3(ethereum);
-      const accounts = await web3.eth.getAccounts();
-      const currentAccount = accounts[0];
-      setWeb3(web3);
+      // ウォレットに接続
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+      // web3インスタンスの生成
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+      //await provider.send("eth_requestAccounts", []);
+
+      // ユーザーアドレスを取得
+      const signer = provider.getSigner();
+      const currentAccount = await signer.getAddress();
+
+
+      // 各変数のstateを保存
+      setWeb3(provider);
       setUserAddress(currentAccount);
 
-      const connectedChainId = await web3.eth.getChainId();
-      const properChainId = parseInt(process.env.REACT_APP_CHAIN_ID);
+      // ネットワークを確認
+      const connectedChainId = await provider.getNetwork().chainId;
+      const properChainId = parseInt(process.env.REACT_APP_CHAIN_ID); // 今回の場合、Mumbaiの80001
       if (connectedChainId !== properChainId) {
-        await ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: web3.utils.toHex(properChainId) }],
-        });
+        // ネットワークがMumbaiでない場合はネットワークを変更
+        try {
+          await window.ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: ethers.utils.hexValue(properChainId) }],
+          });
+        } catch (error) {
+          // wallet_switchEthereumChainがサポートされていない場合
+          console.error('wallet_switchEthereumChain is not supported');
+        }
       }
 
-      initVwbl(web3);
+
+      // initVwblを実行してvwblインスタンスを作成する
+      initVwbl(provider, signer);
+
     } catch (error) {
+
       if (error.code === 4001) {
         alert('Please connect Your Wallet.');
       } else {
@@ -43,16 +64,18 @@ const useVWBL = () => {
       console.error(error);
     }
   };
-
   const disconnectWallet = () => {
     setUserAddress('');
     setWeb3(undefined);
     setVwbl(undefined);
   };
 
-  const initVwbl = (web3) => {
-    const vwblInstance = new VWBL({
-      web3,
+  // Lesson-3
+  const initVwbl = (ethProvider, ethSigner) => {
+    // vwblインスタンスの作成
+    const vwblInstance = new VWBLEthers({
+      ethersProvider: ethProvider, // ethers.js provider instance
+      ethersSigner: ethSigner, // ethers.js signer instance
       contractAddress: process.env.REACT_APP_NFT_CONTRACT_ADDRESS,
       vwblNetworkUrl: process.env.REACT_APP_VWBL_NETWORK_URL,
       manageKeyType: ManageKeyType.VWBL_NETWORK_SERVER,
@@ -60,6 +83,7 @@ const useVWBL = () => {
       uploadMetadataType: UploadMetadataType.IPFS,
       ipfsNftStorageKey: process.env.REACT_APP_NFT_STORAGE_KEY,
     });
+    // vwblインスタンスをstateを保存
     setVwbl(vwblInstance);
   };
 

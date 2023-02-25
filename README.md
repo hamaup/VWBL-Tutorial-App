@@ -23,3 +23,15 @@ Let's become a more advanced NFT engineer with a VWBL NFT, which allows only tho
 - Lesson-0：start here for step-by-step learning
 
 - Lesson-1 ~ Lesson-7：a completed version of each lesson in the above materials.
+
+###　 Section4 Advanced / Next Action
+
+Challenged Issue Number No.3, No.7
+
+3. increase the number of supported extensions for encrypted data
+
+pdf and video are now supported. Minted, displayed, and transferred correctly.
+
+7. migrate from web3.js to ethers.js
+
+Changed to VWBLEthers class. it can connect to blockchain with ethers.js.

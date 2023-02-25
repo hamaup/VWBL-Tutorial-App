@@ -8,6 +8,17 @@ export const useTransferNft = () => {
   const { vwbl } = VwblContainer.useContainer();
   const tokenId = Number(useParams().id);
   const navigate = useNavigate();
+  /*  VwblContainerからvwblインスタンスを取得する */
+
+  // Lesson-7
+  // const transferNft = (data) => {
+  //   console.log('submitted data', data);
+  //   setIsLoading(true);
+  //   setTimeout(() => {
+  //     setIsLoading(false);
+  //     setIsComplete(true);
+  //   }, 4000);
+  // };
 
   const transferNft = async (data) => {
     if (!vwbl) {
@@ -27,6 +38,7 @@ export const useTransferNft = () => {
     }
   };
 
+  // Lesson-7
   const handleComplete = () => {
     setIsComplete((prev) => !prev);
     navigate('/');

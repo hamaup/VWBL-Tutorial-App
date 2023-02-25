@@ -15,21 +15,40 @@ export const Create = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const { isOpen, handleOpen } = useDisclosure();
-  const { web3, vwbl, connectWallet } = VwblContainer.useContainer();
+  const [mimeType, setMimeType] = useState('');
+  /* VwblContainerから web3,vwbl,connectWallet を取得する */
+  const { web3, vwbl, connectWallet } = VwblContainer.useContainer();　
+
+  // Lesson-4
+  // const mintNft = (data) => {
+  //   setIsLoading(true);
+  //   console.log('submitted data', data);
+  //   console.log('mint start...');
+  //   setTimeout(() => {
+  //     console.log('mint success!');
+  //     setIsLoading(false);
+  //     handleOpen();
+  //   }, 7000);
+  // };
 
   const mintNft = async (data) => {
     setIsLoading(true);
-    if (!web3 || !vwbl) {
+    if (!(web3 && vwbl)) {
       alert('Your wallet is not connected. Please try again.');
       setIsLoading(false);
       await connectWallet();
       return;
     }
+
     const { asset, thumbnail, title, description } = data;
+
     try {
+      // VWBLネットワークに対する署名を確認
       if (!vwbl.signature) {
         await vwbl.sign();
       }
+
+      // VWBL NFTを発行
       await vwbl.managedCreateTokenForIPFS(title, description, asset[0], thumbnail[0], 0);
 
       setIsLoading(false);
@@ -49,6 +68,7 @@ export const Create = () => {
 
   const onChangeFile = useCallback((e) => {
     const file = e.target.files[0];
+    setMimeType(file.type);
     setFile(file);
   }, []);
 
@@ -64,6 +84,7 @@ export const Create = () => {
   const onClearFile = useCallback(() => {
     setFileUrl('');
     setFile(undefined);
+    setMimeType('');
   }, []);
 
   const onClearThumbnail = useCallback(() => {
@@ -123,7 +144,8 @@ export const Create = () => {
           <FilePreviewer
             url={fileUrl}
             inputId="asset"
-            acceptType=".jpeg,.jpg,.png,.gif"
+            acceptType=".jpeg,.jpg,.png,.gif,.pdf,.mp4,.mov,.mp3"
+            mimeType={mimeType}
             opt={{
               ...register('asset', {
                 required: 'Asset is required',
@@ -224,7 +246,7 @@ export const Create = () => {
           <button type="submit" className="Mint-Button" disabled={!isChecked}>
             {isLoading ? (
               <div style={{ display: 'flex', textAlign: 'center', justifyContent: 'center', gap: 10 }}>
-                <div className="Mint-Loader"></div>
+                <div className="Mint-Loader" />
                 NFTを作成中です...
               </div>
             ) : (
